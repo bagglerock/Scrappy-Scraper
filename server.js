@@ -2,10 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-// Our scraping tools
-// It works on the client and on the server
-const cheerio = require("cheerio");
-
 // Require all models
 // var db = require("./models");
 
