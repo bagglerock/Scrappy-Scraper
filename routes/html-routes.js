@@ -11,7 +11,12 @@ const mongoose = require("mongoose");
 // Import the models
 const db = require("../models");
 
-mongoose.connect("mongodb://localhost/scrapoogle");
+// mongoose.connect("mongodb://localhost/scrapoogle");
+
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrapoogle";
+
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
 
 module.exports = function (app) {
 
