@@ -1,9 +1,5 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-
-// Require all models
-// var db = require("./models");
 
 const PORT = 3000;
 
@@ -21,9 +17,6 @@ app.use(express.static("public"));
 var exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
-
-// Connect to the Mongo DB
-// mongoose.connect("mongodb://localhost/scrappy");
 
 // Import routes
 require("./routes/html-routes.js")(app);

@@ -1,0 +1,77 @@
+::before,
+*,
+::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{ 
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    font-size: 4rem;
+    font-family: 'Fredericka the Great', cursive;
+    background-color: rgba(200, 200, 200, 0.8);
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:hover {
+    color: orange;
+}
+
+section {
+    display: grid;
+    grid-gap: 1rem;
+    justify-content: space-evenly;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 590px));
+}
+
+header {
+    text-align: center;
+    padding: 8rem;
+    background-image: url(../img/art-black-and-white-craft-40906\ \(1\).jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+}
+
+.header-title {
+    position: relative;
+    top: 50%;
+    letter-spacing: 8px;
+    
+}
+
+.article-container {
+    margin-top: 2rem;
+    font-family: 'Libre Baskerville', serif;
+    padding: 2rem;
+    border: black solid 1px;
+}
+
+.article-container:hover {
+    border: solid darkorange 1px;
+}
+
+.title-container {
+
+
+}
+
+.link-container {
+
+}
