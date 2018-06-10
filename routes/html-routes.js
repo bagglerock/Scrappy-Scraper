@@ -24,44 +24,59 @@ module.exports = function (app) {
     // A GET route for scraping a site
     app.get("/update/", function (req, res) {
         console.log("route has been hit");
-        let count = 0;
+        //let count = 0;
         let newArticles = [];
-        axios.get('https://news.google.com/')
-            .then(function (response) {
+        //let unenteredArticles = [];
+        axios.get('https://news.google.com/').then(function (response) {
                 let $ = cheerio.load(response.data);
                 $("article a").each(function (i, element) {
 
                     let result = {};
-                    result.title = $(this)
-                        .children("span")
-                        .text();
-                    result.link = $(this)
-                        .attr("href");
+                    result.title = $(this).children("span").text();
+                    result.link = $(this).attr("href");
 
-                    newArticles.push(result);
-                })
-
-                for (let i = 0; i < newArticles.length; i++) {
-                    if (newArticles[i].title !== "" && newArticles[i].link !== "") {
-                        db.Article.create(newArticles[i])
-                            .then(function (dbArticle) {
-                                count++;
-                                if (i === (newArticles.length) - 1) {
-                                    console.log("scrape complete");
-                                    console.log(count + " articles have been added");
-                                    res.redirect("/");
-                                }
-                            })
-                            .catch(function (err) {
-                                console.log(err);
-                            })
+                    if (result.title !== "" && result.link !== "") {
+                        newArticles.push(result);
                     }
+
+                })
+                // the find() is async and fires out the create in a weird order which screws up the count for added articles
+                // loop through the newArticles array
+                for (let i = 0; i < newArticles.length; i++) {
+                    // check to see if the article exists in the database(async)
+                    db.Article.find({
+                        title: newArticles[i].title
+                        // after that check is done do stuff
+                    }).exec(function (err, doc) {
+                        // if error just say something
+                        if (err) {console.log("error was hit");}
+                        // if document exists then mention it
+                        if (doc.length) {
+                            console.log('Review already exists!');
+                            //otherwise it does not exist so add it to the database
+                        } else {
+        
+                            console.log("should be adding");
+                            db.Article.create(newArticles[i]).then(function (dbArticle) {
+                                console.log("added a new article");
+                                console.log(i + " and " + newArticles.length);
+                                if (i === (newArticles.length) - 1) {
+                                    
+                                    console.log(count + " articles were added");
+                                }
+                                //console.log(dbArticle);
+                            })
+                        }
+                        
+                    })
                 }
             })
             .catch(function (error) {
-                //console.log(error);
+                console.log(error);
+                //res.send(error);
             });
-            //res.end();
+        //res.end();
+        res.redirect("/");
     });
 
 
@@ -71,6 +86,7 @@ module.exports = function (app) {
         db.Article.find({}).sort({
                 _id: -1
             })
+            .limit(100)
             .then(function (dbArticle) {
                 // If we were able to successfully find Articles, send them back to the client
                 let hbsObject = {
