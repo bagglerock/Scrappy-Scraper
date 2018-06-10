@@ -14,9 +14,9 @@ body{
 }
 
 h1 {
-    font-size: 4rem;
+    font-size: 2.5rem;
     font-family: 'Fredericka the Great', cursive;
-    background-color: rgba(200, 200, 200, 0.8);
+    background-color: rgba(200, 200, 200, 0.7);
 }
 
 h3 {
@@ -36,17 +36,26 @@ section {
     display: grid;
     grid-gap: 1rem;
     justify-content: space-evenly;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 590px));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
 }
 
 header {
     text-align: center;
-    padding: 8rem;
+    padding: 3rem 0;
     background-image: url(../img/art-black-and-white-craft-40906\ \(1\).jpg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
+}
+
+.button {
+    border-radius: 5px;
+    font-size: 1rem;
+    padding: 1rem 2rem;
+    margin-top: 2rem;
+    background-color: rgb(78, 12, 12);
+    color: white;
 }
 
 .header-title {
@@ -74,4 +83,13 @@ header {
 
 .link-container {
 
+}
+
+@media (min-width: 600px) {
+    h1 {
+        font-size: 4rem;
+    }
+
+    .button {
+        font-size: 1.5rem;
 }

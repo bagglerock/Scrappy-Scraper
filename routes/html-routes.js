@@ -23,6 +23,7 @@ module.exports = function (app) {
 
     // A GET route for scraping a site
     app.get("/update/", function (req, res) {
+        console.log("route has been hit");
         let count = 0;
         let newArticles = [];
         axios.get('https://news.google.com/')
@@ -45,8 +46,10 @@ module.exports = function (app) {
                         db.Article.create(newArticles[i])
                             .then(function (dbArticle) {
                                 count++;
-                                if (i === (newArticles.length)-1) {
+                                if (i === (newArticles.length) - 1) {
+                                    console.log("scrape complete");
                                     console.log(count + " articles have been added");
+                                    res.redirect("/");
                                 }
                             })
                             .catch(function (err) {
@@ -58,20 +61,21 @@ module.exports = function (app) {
             .catch(function (error) {
                 //console.log(error);
             });
-
+            //res.end();
     });
 
 
     // Route for getting all Articles from the db
     app.get("/", function (req, res) {
         // Grab every document in the Articles collection
-        db.Article.find({}).sort({_id:-1})
+        db.Article.find({}).sort({
+                _id: -1
+            })
             .then(function (dbArticle) {
                 // If we were able to successfully find Articles, send them back to the client
                 let hbsObject = {
                     results: dbArticle
                 }
-                console.log(hbsObject);
                 res.render("index", hbsObject);
             })
             .catch(function (err) {
