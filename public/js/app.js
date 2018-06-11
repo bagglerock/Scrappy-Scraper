@@ -3,3 +3,7 @@ $("#update-button").on("click", function (event) {
   console.log("clicked");
   window.location.assign("/update/");
 })
+
+$(".save-article").on("click", function() {
+  console.log("save-article");
+})
