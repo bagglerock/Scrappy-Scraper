@@ -29,6 +29,19 @@ $(".save-article").on("click", function () {
   })
 })
 
+
+$(".show-article").on("click", function () {
+  let articleId = $(this).attr("article-id");
+  console.log("show " + articleId);
+})
+
+
+$(".remove-article").on("click", function () {
+  let articleId = $(this).attr("article-id");
+  console.log("remove " + articleId);
+})
+
+
 $("#saved-page").on("click", function () {
   window.location.assign("/saved/");
 })
