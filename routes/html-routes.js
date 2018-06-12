@@ -16,17 +16,39 @@ const db = require("../models");
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrapoogle";
 
 mongoose.Promise = Promise;
-mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI); 
+
+function findArticle(article){
+    let promise = new Promise(function(resolve, reject){
+        db.Article.find({
+            title: article.title
+        }).exec(function(err, doc){
+            if (doc.length > 0){
+                resolve("article exists");
+            } else if (doc.length === 0) {
+                addArticle(article);
+                resolve("");
+            } else {
+                reject("bah");
+            }
+        })
+    })
+    return promise;
+}
+
+function addArticle(article){
+    db.Article.create(article).then(function (dbArticle) {
+    });
+}
 
 module.exports = function (app) {
-
 
     // A GET route for scraping a site
     app.get("/update/", function (req, res) {
         console.log("route has been hit");
-        //let count = 0;
         let newArticles = [];
-        //let unenteredArticles = [];
+        let count = 0;
+        let promises = [];
         axios.get('https://news.google.com/').then(function (response) {
                 let $ = cheerio.load(response.data);
                 $("article a").each(function (i, element) {
@@ -40,43 +62,30 @@ module.exports = function (app) {
                     }
 
                 })
-                // the find() is async and fires out the create in a weird order which screws up the count for added articles
-                // loop through the newArticles array
-                for (let i = 0; i < newArticles.length; i++) {
-                    // check to see if the article exists in the database(async)
-                    db.Article.find({
-                        title: newArticles[i].title
-                        // after that check is done do stuff
-                    }).exec(function (err, doc) {
-                        // if error just say something
-                        if (err) {console.log("error was hit");}
-                        // if document exists then mention it
-                        if (doc.length) {
-                            console.log('Review already exists!');
-                            //otherwise it does not exist so add it to the database
-                        } else {
-        
-                            console.log("should be adding");
-                            db.Article.create(newArticles[i]).then(function (dbArticle) {
-                                console.log("added a new article");
-                                console.log(i + " and " + newArticles.length);
-                                if (i === (newArticles.length) - 1) {
-                                    
-                                    console.log(count + " articles were added");
-                                }
-                                //console.log(dbArticle);
-                            })
-                        }
-                        
-                    })
+
+                for (let i = 0; i < newArticles.length; i++ ){
+                    promises.push(findArticle(newArticles[i]));
                 }
+                Promise.all(promises).then(function(values){
+                    console.log(values);
+                    newArticleCount = 0;
+                    for (let i = 0; i <  values.length; i++){
+                        if(values[i].length === 0){
+                            newArticleCount++;
+                        }
+                    }
+                    console.log(newArticleCount);
+                    res.redirect("/");
+
+                })
+
             })
             .catch(function (error) {
                 console.log(error);
                 //res.send(error);
             });
         //res.end();
-        res.redirect("/");
+        
     });
 
 
