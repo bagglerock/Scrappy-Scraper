@@ -67,7 +67,6 @@ module.exports = function (app) {
                     promises.push(findArticle(newArticles[i]));
                 }
                 Promise.all(promises).then(function(values){
-                    console.log(values);
                     newArticleCount = 0;
                     for (let i = 0; i <  values.length; i++){
                         if(values[i].length === 0){
