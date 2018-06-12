@@ -51,11 +51,12 @@ module.exports = function (app) {
         let promises = [];
         axios.get('https://news.google.com/').then(function (response) {
                 let $ = cheerio.load(response.data);
-                $("article a").each(function (i, element) {
+                $("article").each(function (i, element) {
 
                     let result = {};
-                    result.title = $(this).children("span").text();
-                    result.link = $(this).attr("href");
+                    result.title = $(this).children("div").children("div").children("a").children("span").text();
+                    result.link = $(this).children("a").attr("href");
+                    result.summary = $(this).children("div").children("div").children("p").text();
                     result.isSaved = false;
 
                     if (result.title !== "" && result.link !== "") {

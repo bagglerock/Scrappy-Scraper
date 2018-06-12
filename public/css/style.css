@@ -65,8 +65,8 @@ header {
 
 .button {
     border-radius: 5px;
-    font-size: 1rem;
-    padding: 1rem 2rem;
+    font-size: .8rem;
+    padding: 1rem 1rem;
     margin-top: 2rem;
     background-color: rgb(78, 12, 12);
     color: white;
