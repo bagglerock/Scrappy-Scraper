@@ -16,37 +16,34 @@ const db = require("../models");
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrapoogle";
 
 mongoose.Promise = Promise;
-mongoose.connect(MONGODB_URI); 
+mongoose.connect(MONGODB_URI);
 
-function findArticle(article){
-    let promise = new Promise(function(resolve, reject){
+function findArticle(article) {
+    let promise = new Promise(function (resolve, reject) {
         db.Article.find({
             title: article.title
-        }).exec(function(err, doc){
-            if (doc.length > 0){
-                resolve("article exists");
+        }).exec(function (err, doc) {
+            if (doc.length > 0) {
+                article.isSaved = true;
+                resolve(article);
             } else if (doc.length === 0) {
-                addArticle(article);
-                resolve("");
+                //change article flag
+                resolve(article);
             } else {
-                reject("bah");
+                reject("an error has occured");
             }
         })
     })
     return promise;
 }
 
-function addArticle(article){
-    db.Article.create(article).then(function (dbArticle) {
-    });
-}
 
 module.exports = function (app) {
 
     // A GET route for scraping a site
-    app.get("/update/", function (req, res) {
+    app.get("/", function (req, res) {
         console.log("route has been hit");
-        let newArticles = [];
+        let scrapedArticles = [];
         let count = 0;
         let promises = [];
         axios.get('https://news.google.com/').then(function (response) {
@@ -56,25 +53,25 @@ module.exports = function (app) {
                     let result = {};
                     result.title = $(this).children("span").text();
                     result.link = $(this).attr("href");
+                    result.isSaved = false;
 
                     if (result.title !== "" && result.link !== "") {
-                        newArticles.push(result);
+                        scrapedArticles.push(result);
                     }
 
                 })
 
-                for (let i = 0; i < newArticles.length; i++ ){
-                    promises.push(findArticle(newArticles[i]));
+                for (let i = 0; i < scrapedArticles.length; i++) {
+                    promises.push(findArticle(scrapedArticles[i]));
                 }
-                Promise.all(promises).then(function(values){
+                Promise.all(promises).then(function (values) {
                     newArticleCount = 0;
-                    for (let i = 0; i <  values.length; i++){
-                        if(values[i].length === 0){
+                    for (let i = 0; i < values.length; i++) {
+                        if(!values[i].isSaved){
                             newArticleCount++;
                         }
                     }
-                    console.log(newArticleCount);
-                    res.redirect("/");
+                     console.log(newArticleCount);
 
                 })
 
@@ -84,12 +81,15 @@ module.exports = function (app) {
                 //res.send(error);
             });
         //res.end();
-        
+
     });
 
 
+
+
     // Route for getting all Articles from the db
-    app.get("/", function (req, res) {
+    //this has to be changed to get articles from the database that were saved
+    app.get("/saved", function (req, res) {
         // Grab every document in the Articles collection
         db.Article.find({}).sort({
                 _id: -1

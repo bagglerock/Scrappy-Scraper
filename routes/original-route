@@ -1,0 +1,61 @@
+function findArticle(article){
+    let promise = new Promise(function(resolve, reject){
+        db.Article.find({
+            title: article.title
+        }).exec(function(err, doc){
+            if (doc.length > 0){
+                resolve("article exists");
+            } else if (doc.length === 0) {
+                addArticle(article);
+                resolve("");
+            } else {
+                reject("bah");
+            }
+        })
+    })
+    return promise;
+}
+
+    // A GET route for scraping a site
+    app.get("/update/", function (req, res) {
+        console.log("route has been hit");
+        let newArticles = [];
+        let count = 0;
+        let promises = [];
+        axios.get('https://news.google.com/').then(function (response) {
+                let $ = cheerio.load(response.data);
+                $("article a").each(function (i, element) {
+
+                    let result = {};
+                    result.title = $(this).children("span").text();
+                    result.link = $(this).attr("href");
+
+                    if (result.title !== "" && result.link !== "") {
+                        newArticles.push(result);
+                    }
+
+                })
+
+                for (let i = 0; i < newArticles.length; i++ ){
+                    promises.push(findArticle(newArticles[i]));
+                }
+                Promise.all(promises).then(function(values){
+                    newArticleCount = 0;
+                    for (let i = 0; i <  values.length; i++){
+                        if(values[i].length === 0){
+                            newArticleCount++;
+                        }
+                    }
+                    console.log(newArticleCount);
+                    res.json(newArticleCount);
+
+                })
+
+            })
+            .catch(function (error) {
+                console.log(error);
+                //res.send(error);
+            });
+        //res.end();
+        
+    });
