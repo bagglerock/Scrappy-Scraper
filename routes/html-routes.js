@@ -130,5 +130,15 @@ module.exports = function (app) {
 
     })
 
+    app.delete("/remove/:id", function (req, res) {
+        db.Article.deleteOne({
+            _id: req.params.id
+          }).then(function(data){
+            res.json(data);
+          })
+    });
+
+
+
 
 };

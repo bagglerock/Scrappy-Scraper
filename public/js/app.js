@@ -38,7 +38,14 @@ $(".show-article").on("click", function () {
 
 $(".remove-article").on("click", function () {
   let articleId = $(this).attr("article-id");
-  console.log("remove " + articleId);
+
+  $.ajax("/remove/" + articleId, {
+    type: "DELETE"
+  }).then(
+    function() {
+      location.reload();
+    }
+  );
 })
 
 
