@@ -1,11 +1,15 @@
- {{#each results}}
+ {{#each newArticles}}
 
-<div class="article-container">
+<div class="{{#if isSaved}}article-container-saved{{else}}article-container{{/if}}">
     <div class="title-container">
         <a href="https://news.google.com/{{ link }}" target="_blank"><h3>{{ title }}</h3></a>
     </div>
     <div class="save-button-container">
+        {{#if isSaved}}
+        <input type="button" class="button save-article" value="Already Saved" disabled>
+        {{else}}
         <input type="button" class="button save-article" value="Save Article" article-id="{{ _id }}">
+        {{/if}}
     </div>
 </div>
 

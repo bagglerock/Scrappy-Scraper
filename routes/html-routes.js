@@ -44,6 +44,7 @@ module.exports = function (app) {
     app.get("/", function (req, res) {
         console.log("route has been hit");
         let scrapedArticles = [];
+        let newArticles = [];
         let count = 0;
         let promises = [];
         axios.get('https://news.google.com/').then(function (response) {
@@ -64,24 +65,29 @@ module.exports = function (app) {
                 for (let i = 0; i < scrapedArticles.length; i++) {
                     promises.push(findArticle(scrapedArticles[i]));
                 }
-                Promise.all(promises).then(function (values) {
+                Promise.all(promises).then(function (checkedArticles) {
                     newArticleCount = 0;
-                    for (let i = 0; i < values.length; i++) {
-                        if(!values[i].isSaved){
+                    for (let i = 0; i < checkedArticles.length; i++) {
+                        if(!checkedArticles[i].isSaved){
                             newArticleCount++;
                         }
+                        newArticles.push(checkedArticles[i]);
                     }
-                     console.log(newArticleCount);
+                    console.log(newArticles);
+                    console.log(newArticleCount);
 
+                    let hbsObject = {
+                        newArticles: newArticles,
+                        newArticleCount: newArticleCount
+                    }
+                    res.render("index", hbsObject);
                 })
 
             })
             .catch(function (error) {
                 console.log(error);
-                //res.send(error);
+                res.send(error);
             });
-        //res.end();
-
     });
 
 

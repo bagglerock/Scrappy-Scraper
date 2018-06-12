@@ -97,6 +97,17 @@ header {
     border: solid darkorange 1px;
 }
 
+.article-container-saved {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 2rem;
+    border: green solid 1px;
+}
+
+.article-container-saved:hover {
+    border: solid lightgreen 1px;
+}
+
 .save-button-container {
     text-align: center;
 }
