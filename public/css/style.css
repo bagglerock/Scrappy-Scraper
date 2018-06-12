@@ -45,6 +45,11 @@ section {
     grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
 }
 
+nav ul li{
+    display: inline-block;
+    padding: 1rem 2rem;
+}
+
 header {
     text-align: center;
     padding: 3rem 0;
@@ -113,7 +118,7 @@ header {
     text-align: center;
 }
 
-.save-button-container {
+.button-container {
     text-align: center;
 }
 

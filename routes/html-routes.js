@@ -91,11 +91,7 @@ module.exports = function (app) {
     });
 
 
-
-
-    // Route for getting all Articles from the db
-    //this has to be changed to get articles from the database that were saved
-    app.get("/saved", function (req, res) {
+    app.get("/saved/", function (req, res) {
         // Grab every document in the Articles collection
         db.Article.find({}).sort({
                 _id: -1
@@ -104,9 +100,9 @@ module.exports = function (app) {
             .then(function (dbArticle) {
                 // If we were able to successfully find Articles, send them back to the client
                 let hbsObject = {
-                    results: dbArticle
+                    newArticles: dbArticle
                 }
-                res.render("index", hbsObject);
+                res.render("saved", hbsObject);
             })
             .catch(function (err) {
                 // If an error occurred, send it to the client
