@@ -37,15 +37,17 @@ function findArticle(article) {
     return promise;
 }
 
+function addArticle(article) {
+    db.Article.create(article).then(function (dbArticle) {});
+}
 
 module.exports = function (app) {
 
-    // A GET route for scraping a site
+    // A GET route for scraping a site and checking to see if they are already in the saved articles table
     app.get("/", function (req, res) {
         console.log("route has been hit");
         let scrapedArticles = [];
         let newArticles = [];
-        let count = 0;
         let promises = [];
         axios.get('https://news.google.com/').then(function (response) {
                 let $ = cheerio.load(response.data);
@@ -68,13 +70,11 @@ module.exports = function (app) {
                 Promise.all(promises).then(function (checkedArticles) {
                     newArticleCount = 0;
                     for (let i = 0; i < checkedArticles.length; i++) {
-                        if(!checkedArticles[i].isSaved){
+                        if (!checkedArticles[i].isSaved) {
                             newArticleCount++;
                         }
                         newArticles.push(checkedArticles[i]);
                     }
-                    console.log(newArticles);
-                    console.log(newArticleCount);
 
                     let hbsObject = {
                         newArticles: newArticles,
@@ -115,33 +115,24 @@ module.exports = function (app) {
 
     });
 
+    app.post("/save", function (req, res) {
+        console.log("save route was hit");
 
-    // Route for grabbing a specific Article by id, populate it with it's note
-    app.get("/articles/:id", function (req, res) {
+        let article = {
+            title: req.body.title,
+            link: req.body.link
+        }
 
-        // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-        db.Article.findOne({
-                _id: req.params.id
-            })
-            // ..and populate all of the notes associated with it
-            .populate("note")
-            .then(function (dbArticle) {
-                // If we were able to successfully find an Article with the given id, send it back to the client
-                res.json(dbArticle);
-            })
-            .catch(function (err) {
-                // If an error occurred, send it to the client
-                res.json(err);
-            });
+        db.Article.create(article).then(function (err, dbArticle) {
+            if (err){
+                res.json(err)
+            } else {
+                res.json(dbArticle);  
+            }
+            
+        });
 
-    });
-
-
-    // Route for saving/updating an Article's associated Note
-    app.post("/articles/:id", function (req, res) {
-
-
-    });
+    })
 
 
 };

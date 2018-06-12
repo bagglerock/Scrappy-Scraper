@@ -108,6 +108,11 @@ header {
     border: solid lightgreen 1px;
 }
 
+.article-count {
+    padding: 2rem 0;
+    text-align: center;
+}
+
 .save-button-container {
     text-align: center;
 }

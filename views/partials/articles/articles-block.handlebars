@@ -8,7 +8,7 @@
         {{#if isSaved}}
         <input type="button" class="button save-article" value="Already Saved" disabled>
         {{else}}
-        <input type="button" class="button save-article" value="Save Article" article-id="{{ _id }}">
+        <input type="button" class="button save-article" value="Save Article" article-link="{{ link }}" article-title="{{ title }}" article-id="{{ _id }}">
         {{/if}}
     </div>
 </div>
