@@ -5,18 +5,19 @@ $("#update-button").on("click", function (event) {
 })
 
 $(".save-article").on("click", function () {
-  const articleId = $(this).attr("article-id");
+  //const articleId = $(this).attr("article-id");
   const title = $(this).attr("article-title");
   const link = $(this).attr("article-link");
+  const summary = $(this).attr("article-summary");
   const thisButton = $(this);
   const buttonsParent = $(this).parent().parent();
 
-  console.log(articleId);
   $.ajax("/save/", {
     type: "POST",
     data: {
       title: title,
-      link: link
+      link: link,
+      summary: summary
     }
   }).then(function (res) {
     //might have to look at this again later
@@ -31,8 +32,13 @@ $(".save-article").on("click", function () {
 
 //  Event listener:  click to open filters modal
 $(".show-article").on("click", function () {
-  console.log("show");
   //functions to make the buttons and append them to the modal
+  let articleId = $(this).attr("article-id");
+  $.ajax("/saved/" + articleId, {
+    type: "GET"
+  }).then(function(article){
+    $("#note-article-title").text(article[0].title);
+  });
   $("#note-modal").show();
 })
 
@@ -59,11 +65,14 @@ $("#new-page").on("click", function () {
 
 
 $("#note-post").on("click", function() {
-  let newNote = $("#new-note-data").val();
+  let newNote = $("#new-note-body").val();
+  let newTitle = $("#new-note-title").val();
+
   $.ajax("/note/", {
     type: "POST",
     data: {
-      note: newNote
+      title: newTitle,
+      body: newNote
     }
   }).then(function(res){
     console.log(res);

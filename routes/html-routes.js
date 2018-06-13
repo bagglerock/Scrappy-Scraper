@@ -112,12 +112,21 @@ module.exports = function (app) {
 
     });
 
+    app.get("/saved/:id", function (req, res) {
+        db.Article.find({
+            _id: req.params.id
+        }).then(function(dbArticle){
+            res.json(dbArticle);
+        })
+    })
+
     app.post("/save", function (req, res) {
         console.log("save route was hit");
 
         let article = {
             title: req.body.title,
-            link: req.body.link
+            link: req.body.link,
+            summary: req.body.summary
         }
 
         db.Article.create(article).then(function (err, dbArticle) {
@@ -132,10 +141,11 @@ module.exports = function (app) {
     })
 
     app.post("/note", function(req, res){
-        console.log("posting a note route hit");
+        console.log("posting a note, route hit");
 
         let newNote = {
-            note: req.body.note
+            title: req.body.title,
+            body: req.body.note
         }
 
         db.Note.create(newNote).then(function (err, dbNote) {
