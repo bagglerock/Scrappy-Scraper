@@ -29,12 +29,12 @@ $(".save-article").on("click", function () {
   })
 })
 
-
+//  Event listener:  click to open filters modal
 $(".show-article").on("click", function () {
-  let articleId = $(this).attr("article-id");
-  console.log("show " + articleId);
+  console.log("show");
+  //functions to make the buttons and append them to the modal
+  $("#note-modal").show();
 })
-
 
 $(".remove-article").on("click", function () {
   let articleId = $(this).attr("article-id");
@@ -42,19 +42,46 @@ $(".remove-article").on("click", function () {
   $.ajax("/remove/" + articleId, {
     type: "DELETE"
   }).then(
-    function() {
+    function () {
       location.reload();
     }
   );
 })
 
-
 $("#saved-page").on("click", function () {
   window.location.assign("/saved/");
 })
-
 
 $("#new-page").on("click", function () {
   console.log("new");
   window.location.assign("/");
 })
+
+
+$("#note-post").on("click", function() {
+  let newNote = $("#new-note-data").val();
+  $.ajax("/note/", {
+    type: "POST",
+    data: {
+      note: newNote
+    }
+  }).then(function(res){
+    console.log(res);
+  });
+})
+
+
+$("#note-cancel").on("click", function () {
+  $(".modal").hide();
+})
+
+
+//  Event listener:  click to close a general modal when clicked outside of the modal
+$(document).on("click", function (event) {
+  var modalClass = document.getElementsByClassName("modal");
+  for (var i = 0; i < modalClass.length; i++) {
+    if (event.target == modalClass[i]) {
+      $(".modal").hide();
+    }
+  }
+});

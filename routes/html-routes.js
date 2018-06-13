@@ -131,6 +131,23 @@ module.exports = function (app) {
 
     })
 
+    app.post("/note", function(req, res){
+        console.log("posting a note route hit");
+
+        let newNote = {
+            note: req.body.note
+        }
+
+        db.Note.create(newNote).then(function (err, dbNote) {
+            if(err){
+                console.log(err);
+            } else {
+                res.json(dbNote);
+            }
+
+        })
+    })
+
     app.delete("/remove/:id", function (req, res) {
         db.Article.deleteOne({
             _id: req.params.id
