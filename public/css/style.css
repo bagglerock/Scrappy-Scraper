@@ -145,6 +145,24 @@ header {
     height: 6rem;
 }
 
+.note-container {
+    padding: 1rem;
+    display: grid;
+    grid-template-rows: auto;
+    grid-gap: 1rem;
+    border: solid maroon 3px;
+}
+
+.note-buttons-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
+}
+
+.note-container input, .note-container textarea {
+    width: 100%;
+    font-size: 1rem;
+}
 
 
 
