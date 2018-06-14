@@ -145,7 +145,7 @@ module.exports = function (app) {
 
         let newNote = {
             title: req.body.title,
-            body: req.body.note
+            body: req.body.body
         }
 
         db.Note.create(newNote).then(function (err, dbNote) {
