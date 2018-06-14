@@ -113,9 +113,11 @@ module.exports = function (app) {
     });
 
     app.get("/saved/:id", function (req, res) {
-        db.Article.find({
+        db.Article.findOne({
             _id: req.params.id
-        }).then(function(dbArticle){
+        })
+        .populate("note")
+        .then(function (dbArticle) {
             res.json(dbArticle);
         })
     })
@@ -130,17 +132,17 @@ module.exports = function (app) {
         }
 
         db.Article.create(article).then(function (err, dbArticle) {
-            if (err){
+            if (err) {
                 res.json(err)
             } else {
-                res.json(dbArticle);  
+                res.json(dbArticle);
             }
-            
+
         });
 
     })
 
-    app.post("/note", function(req, res){
+    app.post("/note/:id", function (req, res) {
         console.log("posting a note, route hit");
 
         let newNote = {
@@ -148,22 +150,24 @@ module.exports = function (app) {
             body: req.body.body
         }
 
-        db.Note.create(newNote).then(function (err, dbNote) {
-            if(err){
-                console.log(err);
-            } else {
-                res.json(dbNote);
-            }
-
-        })
+        db.Note.create(newNote)
+            .then(function (dbNote) {
+                return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+            })
+            .then(function (dbArticle) {
+            res.json(dbArticle);
+            })
+            .catch(function(err) {
+                res.json(err);
+            })
     })
 
     app.delete("/remove/:id", function (req, res) {
         db.Article.deleteOne({
             _id: req.params.id
-          }).then(function(data){
+        }).then(function (data) {
             res.json(data);
-          })
+        })
     });
 
 

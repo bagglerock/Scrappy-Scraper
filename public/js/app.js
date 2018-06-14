@@ -37,7 +37,10 @@ $(".show-article").on("click", function () {
   $.ajax("/saved/" + articleId, {
     type: "GET"
   }).then(function(article){
-    $("#note-article-title").text(article[0].title);
+    $("#note-article-title").text(article.title);
+    $("#note-post").attr("article-id", article._id);
+    $("#last-note-title").text(article.note.title);
+    $("#last-note-body").text(article.note.body);
   });
   $("#note-modal").show();
 })
@@ -67,8 +70,9 @@ $("#new-page").on("click", function () {
 $("#note-post").on("click", function() {
   let newNote = $("#new-note-body").val();
   let newTitle = $("#new-note-title").val();
+  let articleId = $("#note-post").attr("article-id");
 
-  $.ajax("/note/", {
+  $.ajax("/note/" + articleId, {
     type: "POST",
     data: {
       title: newTitle,
