@@ -45,7 +45,6 @@ module.exports = function (app) {
 
     // A GET route for scraping a site and checking to see if they are already in the saved articles table
     app.get("/", function (req, res) {
-        console.log("route has been hit");
         let scrapedArticles = [];
         let newArticles = [];
         let promises = [];
@@ -54,8 +53,8 @@ module.exports = function (app) {
                 $("article").each(function (i, element) {
 
                     let result = {};
-                    result.title = $(this).children("div").children("div").children("a").children("span").text();
-                    result.link = $(this).children("a").attr("href");
+                    result.title = $(this).children("div").children("div").children("h4").children("a").children("span").text();
+                    result.link = $(this).children("div").children("div").children("h4").children("a").attr("href");
                     result.summary = $(this).children("div").children("div").children("p").text();
                     result.isSaved = false;
 
